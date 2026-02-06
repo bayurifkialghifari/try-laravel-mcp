@@ -31,15 +31,16 @@ class SearchProductTool extends Tool
     public function handle(Request $request): Response
     {
         $validated = $request->validate([
-            'search' => 'required|string',
             'field' => 'nullable|string',
             'action' => 'required|string|in:get,count',
+            'search' => 'required_if:action,get|string',
         ]);
 
         $list = Product::query()
-            ->when($validated['field'] ?? null, function ($query, $field) use ($validated) {
+            ->when($validated['field'] ?? null && $validated['search'] ?? null, function ($query, $field) use ($validated) {
                 $query->whereLike($field, '%' . $validated['search'] . '%');
-            }, function ($query) use ($validated) {
+            })
+            ->when($validated['search'] ?? null, function ($query) use ($validated) {
                 $query->where(function ($q) use ($validated) {
                     $q->whereLike('name', '%' . $validated['search'] . '%')
                         ->orwhereLike('description', '%' . $validated['search'] . '%')

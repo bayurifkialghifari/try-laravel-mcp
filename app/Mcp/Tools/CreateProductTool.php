@@ -36,7 +36,7 @@ class CreateProductTool extends Tool
             'price' => 'required|numeric',
             'stock' => 'nullable|integer',
             'category' => 'nullable|string',
-            'sku' => 'required|string|unique:products,sku',
+            'sku' => 'required|string',
             'image' => 'nullable|string',
             'is_active' => 'nullable|boolean',
         ]);

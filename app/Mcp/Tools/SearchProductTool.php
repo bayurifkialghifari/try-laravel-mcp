@@ -57,20 +57,13 @@ class SearchProductTool extends Tool
             return Response::text('No products found matching your criteria. Please try different keywords or check for typos.');
         }
 
-        $tableHeader = "| ID | SKU | Name | Category | Price | Stock | Status |\n";
-        $tableHeader .= "|----|-----|------|----------|-------|-------|--------|\n";
         $tableRows = '';
 
         foreach ($list as $product) {
-            $status = $product->is_active ? 'Active' : '*Inactive*';
-            if ($product->stock == 0) {
-                $status .= ' / *Out of Stock*';
-            }
-            $tableRows .= "| {$product->id} | {$product->sku} | {$product->name} | {$product->category} | $" . number_format($product->price, 2) . " | {$product->stock} | {$status} |\n";
+            $tableRows .= "{$product->id}, {$product->name}, {$product->description}, {$product->price}, {$product->stock}, {$product->category}, {$product->sku}, {$product->image}, " . ($product->is_active ? 'Active' : 'Inactive') . "\n";
         }
 
-        $markdownTable = $tableHeader . $tableRows;
-        return Response::text($markdownTable);
+        return Response::text($tableRows);
     }
 
     /**
